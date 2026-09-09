@@ -50,8 +50,10 @@ public class PostService {
 ```
 
 `SpringApplication.run()`이 실행되면 Spring Boot 애플리케이션이 시작된다.
+
 이때 `@SpringBootApplication`에 포함된 `@ComponentScan`을 통해
 애플리케이션 클래스가 위치한 패키지와 하위 패키지를 탐색한다.
+
 Spring은 그 과정에서 `@Service`, `@RestController` 등이 붙은 클래스를 찾아
 Spring Container에서 Bean으로 등록하고 관리한다.
 
