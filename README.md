@@ -11,7 +11,9 @@ CEOS 백엔드 24기 스프링 튜토리얼
 ## Spring이 지원하는 기술들을 조사해요
 
 > 이 README의 모든 개념과 예시는 (댓글 기능이 있는) 게시판을 기준으로 설명합니다!
+> 
 > Spring을 사용하지 않은 순수 Java 게시판과 Spring Boot 게시판을 비교하며,
+>
 > 두 방식의 차이를 통해 Spring의 동작 원리를 이해하는 것을 목표로 합니다.😺
 
 ### 1. IoC / DI
@@ -413,6 +415,38 @@ Spring은 필요한 객체 관리와 부가 기능을 외부에서 제공한다.
 수정해야 하는 범위를 줄일 수 있다.
 
 ## Spring Bean을 조사해요
+
+### Spring Bean의 생명주기와 게시판 게시글 조회 흐름
+
+```mermaid
+flowchart TD
+    A["Spring Boot 애플리케이션 시작"]
+      --> B["Component Scan<br/>@RestController · @Service"]
+      --> C["BeanDefinition 등록"]
+      --> D["객체 생성"]
+      --> E["생성자 기반 의존성 주입"]
+      --> F["@PostConstruct 초기화"]
+      --> G["Spring Container에 Bean 등록"]
+
+    G --> H["PostController Bean"]
+    G --> I["PostService Bean"]
+    G --> J["PostRepository Bean<br/>Spring Data JPA가 구현체 생성"]
+
+    H -. "Service 주입" .-> I
+    I -. "Repository 주입" .-> J
+    G -. "기본 Scope: Singleton" .-> I
+
+    K["GET /posts 요청"] --> H
+    H --> I
+    I --> J
+    J --> L[("게시글 DB")]
+    L --> M["Post Entity<br/>JPA가 관리<br/>Spring Bean 아님"]
+    M --> N["게시글 목록 JSON 응답"]
+
+    G --> O["애플리케이션 종료"]
+    O --> P["@PreDestroy 등<br/>종료 전 정리"]
+
+```
 
 ### 1. Spring Bean이란?
 
